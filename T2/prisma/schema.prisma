@@ -1,0 +1,115 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+
+//To migrate this file use the command: npx prisma migrate dev
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+//#############################################################
+
+model personaje_tiene_trabajo {
+  trabajos trabajo @relation(fields: [id_trabajo],references: [id])
+  id_trabajo    Int
+  fecha_inicio  DateTime @default(now())
+  fecha_termino DateTime?
+  personaje       personaje  @relation(fields: [id_personaje], references: [id])
+  id_personaje  Int
+    @@id([id_trabajo, id_personaje])
+}
+
+model personaje {
+  id                  Int      @id @default(autoincrement())
+  nombre              String   @db.VarChar(45)
+  fuerza              Int
+  fecha_nacimiento    DateTime 
+  objeto              String   @db.VarChar(30)
+
+  
+  trabajos            personaje_tiene_trabajo[]
+  habita              personaje_habita_reino[]
+  autos               karts[]
+}
+
+model trabajo {
+  id          Int      @id @default(autoincrement())
+  descripcion String   @db.VarChar(45)
+  sueldo      Int
+
+  chamba personaje_tiene_trabajo[]      
+}
+
+model reinos {
+  id          Int @id @default(autoincrement())
+  nombre      String @db.VarChar(45)
+  ubicacion   String @db.VarChar(45)
+  superficie  Int
+
+  habitante personaje_habita_reino[]
+  def         ReinosDefensas[]
+  
+  primer_reino diplomacia[] @relation("idreino1")
+  segundo_reino diplomacia[] @relation("idreino2")
+}
+model karts {
+
+  id        Int     @id @default(autoincrement())
+  modelo    String  @db.VarChar(45)
+  color     String  @db.VarChar(45)
+  velocidad_maxima Int? 
+  p_personaje personaje @relation(fields: [id_personaje],references: [id])
+  id_personaje Int
+}
+
+model personaje_habita_reino{
+
+  p_personaje personaje @relation(fields: [id_personaje],references: [id])
+  id_personaje Int 
+  reino reinos @relation(fields: [id_reino], references: [id])
+  id_reino Int
+  fecha_registro DateTime
+  es_gobernante Boolean
+
+  @@id ([id_personaje, id_reino])
+}
+
+model defensas{
+
+  id        Int     @id @default(autoincrement())
+  defensa String    @db.VarChar(45)
+
+  rdef    ReinosDefensas[]
+}
+
+model ReinosDefensas {
+  id_reinos    Int      @map("reinos_id")
+  id_defensas   Int      @map("defensas_id")
+
+  // Relación con el modelo "Reinos"
+  reinos       reinos   @relation(fields: [id_reinos], references: [id])
+
+  // Relación con el modelo "Defensa"
+  defensa      defensas  @relation(fields: [id_defensas], references: [id])
+
+  @@id([id_reinos, id_defensas])
+}
+
+model diplomacia {
+
+  id1 reinos @relation("idreino1", fields: [id_1], references: [id])
+  id_1 Int
+
+  id2 reinos @relation("idreino2", fields: [id_2],references: [id])
+  id_2 Int
+  
+  es_aliado Boolean
+
+  @@id([id_1,id_2])
+
+}
