@@ -23,7 +23,7 @@ const obtenerKart = async (req,res) => {
 
 const obtenerKartId = async (req, res) => {
     const { id } = req.params;
-    const kart = await prisma.kart.findUnique({
+    const kart = await prisma.karts.findUnique({
       where: {
         id: Number(id),
       },
@@ -55,7 +55,7 @@ const actualizarKart = async (req,res) => {
 
 const eliminarKart = async (req,res) =>{
     const{id}=req.body;
-    const kart= await prisma.kart.delete({
+    const kart= await prisma.karts.delete({
       
         where:{
         id: Number(id),

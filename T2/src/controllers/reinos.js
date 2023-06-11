@@ -19,7 +19,7 @@ const obtenerReino = async (req, res) => {
   
 const obtenerReinoPorId = async (req, res) => {
     const { id } = req.params;
-    const reino = await prisma.reino.findUnique({
+    const reino = await prisma.reinos.findUnique({
       where: {
         id: Number(id),
       },

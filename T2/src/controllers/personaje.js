@@ -30,7 +30,8 @@ const obtenerPersonajePorId = async (req, res) => {
     where: {
       id: Number(id),
     },
-  });
+  }); 
+  console.log(personaje);
   if (personaje) {
     res.json(personaje);
   } else {

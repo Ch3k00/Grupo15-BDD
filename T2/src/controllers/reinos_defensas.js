@@ -2,7 +2,7 @@ import prisma from "../prismaClient.js";
 
 const crearReinoDef = async (req, res) => {
     const {id_reinos,id_defensas} = req.body;
-    const reinod = await prisma.reinod.create({
+    const reinod = await prisma.reinosDefensas.create({
       data: {
         id_reinos,
         id_defensas,
@@ -17,10 +17,12 @@ const obtenerReinoDef = async (req, res) => {
 };  
 
 const obtenerReinoDefPorId = async (req, res) => {
-    const { id } = req.params;
+    const { id_reinos,id_defensas } = req.params;
     const reinod = await prisma.reinosDefensas.findUnique({
       where: {
-        id: Number(id),
+        id_reinos_id_defensas:{
+          id_defensas:Number(id_defensas),id_reinos:Number(id_reinos)
+        }
       },
     });
     if (reinod) {
@@ -31,24 +33,30 @@ const obtenerReinoDefPorId = async (req, res) => {
 };
 
 const actualizarReinoDef = async (req, res) => {
-    const { id_reinos,id_defensas } = req.body;
-    const reinod = await prisma.reinosDefensas.update({
-      where: {
-        id: Number(id),
-      },
-      data: {
-        id_reinos,
-        id_defensas
-      },
-    });
-    res.json(reinod);
+  const { id_reinos,id_defensas } = req.body;
+  const reinod = await prisma.reinosDefensas.update({
+    where: {
+      id_reinos_id_defensas:{id_reinos:Number(id_reinos),id_defensas:Number(id_defensas)}
+    },
+    data: {
+      reinos:{connect:{
+        id:Number(id_reinos),
+      },},
+      defensa:{connect:{
+        id:Number(id_defensas),
+      },}
+    },
+  });
+  res.json(reinod);
 };
 
 const eliminarReinoDef = async (req, res) => {
-    const { id } = req.body;
+    const { id_reinos,id_defensas } = req.body;
     const reinod = await prisma.reinosDefensas.delete({
       where: {
-        id: Number(id),
+        id_reinos_id_defensas:{
+          id_reinos:Number(id_reinos),id_defensas:Number(id_defensas)
+        }
       },
     });
     res.json(reinod);

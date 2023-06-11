@@ -19,10 +19,12 @@ const obtenerPersonajeHabitaReino = async(req,res)=>{
 };
 
 const obtenerPersonajeHabitaReinoPorId = async(req , res) => {
-    const { id } = req.params;
+    const {id_reino,id_personaje } = req.params;
     const personaje_habita_reino = await prisma.personaje_habita_reino.findUnique({
     where: {
-      id: Number(id),
+      id_personaje_id_reino:{
+        id_reino:Number(id_reino),id_personaje:Number(id_personaje)
+      }
     },
   });
   if (personaje_habita_reino) {
@@ -33,27 +35,29 @@ const obtenerPersonajeHabitaReinoPorId = async(req , res) => {
 }
 
 const actualizarPersonajeHabitaReino = async (req, res) => {
-    const { id } = req.body;
-    const { id_personaje, id_reino, fecha_registro, es_gobernante } = req.body;
-    const personaje_habita_reino = await prisma.personaje_habita_reino.update({
-      where: {
-        id: Number(id),
-      },
-      data: {
-        id_personaje,
-        id_reino,
-        fecha_registro,
-        es_gobernante,
-      },
-    });
-    res.json(personaje_habita_reino);
-  };
+  const { id_personaje, id_reino, fecha_registro, es_gobernante } = req.body;
+  const personaje_habita_reino = await prisma.personaje_habita_reino.update({
+    where: {
+      id_personaje_id_reino: {id_personaje:Number(id_personaje),id_reino:Number(id_reino)}
+    },
+    data: {
+      id_personaje,
+      id_reino,
+      fecha_registro,
+      es_gobernante,
+    },
+  });
+  res.json(personaje_habita_reino);
+};
+
 
   const eliminarPersonajeHabitaReino = async (req, res) => {
-    const { id } = req.body;
+    const { id_personaje,id_reino } = req.body;
     const personaje_habita_reino = await prisma.personaje_habita_reino.delete({
       where: {
-        id: Number(id),
+        id_personaje_id_reino:{
+          id_personaje:Number(id_personaje),id_reino:Number(id_reino)
+        }
       },
     });
     res.json(personaje_habita_reino);
