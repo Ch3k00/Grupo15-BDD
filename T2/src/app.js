@@ -47,6 +47,18 @@ route.get("/top5personajesConMasFuerza",async (req,res) => {
     }
 });
 
+route.get("/personajeConMasKarts",async (req,res) => {
+    const personajeConMasKarts= await prisma.personaje.findFirst({
+      orderBy:{autos:{_count: "desc"},},
+      include:{autos:true,},})
+    
+    if (personajeConMasKarts){
+    
+      const{nombre,autos}=personajeConMasKarts;
+      const totalKarts = autos.lenght;
+      res.json({nombre,totalKarts})
+    }});
+
 route.get("/cantidadHabitantes/:id_reino", async (req,res) => {
 const id_reino = Number(req.params.id_reino)
 
