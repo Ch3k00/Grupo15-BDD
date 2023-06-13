@@ -10,7 +10,7 @@ import reino from './controllers/reinos.js';
 import reinosDefensas from './controllers/reinos_defensas.js';
 import defensas from './controllers/defensas.js';
 import morgan from 'morgan';
-
+import prisma from './prismaClient.js';
 
 const ENV = process.env;
 const app = express();
